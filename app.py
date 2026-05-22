@@ -31,11 +31,14 @@ _otp_store = {}
 
 app = Flask(__name__)
 
-# CORS: in production, restrict to your Vercel frontend URL via FRONTEND_URL env var
+# CORS: allow frontend to call the backend
+# Set FRONTEND_URL env var in production (e.g. https://smartproctor.vercel.app)
 _frontend_url = os.environ.get("FRONTEND_URL", "*")
 CORS(app,
-     origins=[_frontend_url] if _frontend_url != "*" else "*",
-     supports_credentials=True)
+     origins=_frontend_url if _frontend_url == "*" else [_frontend_url, "http://localhost:5173", "http://localhost:3000"],
+     supports_credentials=True,
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
 
 mongo_uri = os.environ.get("MONGO_URI")
 secret_key = os.environ.get("SECRET_KEY")
@@ -1396,6 +1399,12 @@ def serve_image(image_id):
     except Exception as e:
         print(f"Error in /images/{image_id}: {e}")
         return jsonify({"error": "Internal server error"}), 500
+
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Render uses this to verify the service is alive."""
+    return jsonify({"status": "ok"}), 200
 
 
 if __name__ == '__main__':
