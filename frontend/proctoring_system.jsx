@@ -1,6 +1,10 @@
-import React, { useState, useEffect, createContext, useContext, useReducer, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
-import Webcam from "react-webcam";
+// import React, { useState, useEffect, createContext, useContext, useReducer, useRef } from 'react';
+// import { createRoot } from 'react-dom/client';
+// import Webcam from "react-webcam";
+
+const { useState, useEffect, createContext, useContext, useReducer, useRef } = React;
+const { createRoot } = ReactDOM;
+const Webcam = window.Webcam || ReactWebcam;
 
 // --- API Configuration ---
 // STEP 1: Set this to false to use your REAL backend
